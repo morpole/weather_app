@@ -26,3 +26,34 @@
 p {
   text-transform: capitalize;
 }
+
+
+
+.forecast-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-direction: row; 
+}
+
+ .forecast-day {
+  width: calc(100% - 1px); /* Each row contains up to 3 items with some spacing */
+  margin: 1px; /* Spacing between rows */
+} 
+
+.forecast-item {
+  width: calc(10% - 10px); /* Each row contains up to 5 items with some spacing */
+  margin: 5px; /* Spacing between items */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden; /* Hide any overflowing content */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis; /* Add ellipsis (...) for text overflow */
+}
+
+.forecast-item img {
+  max-width: 100%; /* Limit image width to the container's width */
+  height: auto; /* Maintain image aspect ratio */
+}
+

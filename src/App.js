@@ -3,12 +3,13 @@ import "./App.css";
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
+  const [forecastData, setForecastData] = useState(null);
   const apiKey = process.env.REACT_APP_API_KEY;
   const [city, setCity] = useState("");
   const [inputValue, setInputValue] = useState("Dublin,IE");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [forecastData, setForecastData] = useState(null);
+  
 
   const fetchWeatherData = useCallback(async () => {
     try {
@@ -22,6 +23,7 @@ const Weather = () => {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&limit=2&appid=${apiKey}&units=metric`
       );
+
       if (!response.ok) {
         throw new Error("Weather data not found");
       }
@@ -67,8 +69,9 @@ const Weather = () => {
   useEffect(() => {
     if (city) {
       fetchWeatherData();
+      fetchForecastData();
     }
-  }, [city, fetchWeatherData]);
+  }, [city, fetchWeatherData, fetchForecastData]);
 
   const handleCityChange = (e) => {
     setInputValue(e.target.value);
@@ -79,9 +82,41 @@ const Weather = () => {
     if (inputValue.trim()) {
       setCity(inputValue.trim()); // Update city with the input value
       setInputValue(""); // Clear input field
-      fetchWeatherData(); // Fetch weather data
+      // fetchWeatherData(); 
+      // Fetch weather data
     }
   };
+
+
+  // Helper function to group forecast items by date
+function groupForecastByDate(forecastList) {
+  const grouped = {};
+  forecastList.forEach((forecast) => {
+    const date = formatDate(forecast.dt_txt);
+    if (!grouped[date]) {
+      grouped[date] = [];
+    }
+    grouped[date].push(forecast);
+  });
+  return Object.values(grouped);
+}
+
+// Helper function to format date (extract day and time without seconds)
+function formatDate(dt_txt) {
+  const parts = dt_txt.split(' ');
+  const dateParts = parts[0].split('-');
+  const timeParts = parts[1].split(':')[0];
+
+  const formattedDate = `${dateParts[2]}`;
+  const formattedTime = `${timeParts[0]}${timeParts[1]}`;
+
+  return {
+    formattedDate,
+    formattedTime,
+  }
+};
+
+
 
   return (
     <div>
@@ -100,9 +135,7 @@ const Weather = () => {
           placeholder=" Enter City"
         />
         <button type="submit">Get Weather</button>
-        <button onClick={fetchForecastData}>Get 5-Day Forecast</button>
       </form>
-
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error}</div>}
 
@@ -110,43 +143,51 @@ const Weather = () => {
         <div>
           <h2>{weatherData.name}</h2>
           <h2>{weatherData.sys.country}</h2>
-          <p>High: {weatherData.main.temp_max}</p>
-          {/* change temps to display in whole nums without decimals */}
-          <h1>Temp: {weatherData.main.temp}°C</h1>
-          <p>Low: {weatherData.main.temp_min}°C</p>
+          <p>High: {Math.round(weatherData.main.temp_max)}</p>
+          <h1>Temp: {Math.round(weatherData.main.temp)}°C</h1>
+          <p>Low: {Math.round(weatherData.main.temp_min)}°C</p>
           <img
             className="logo"
             src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`}
             alt="weather icon"
           />
           <p>{weatherData.weather[0].description}</p>
-          <p>Feels like: {weatherData.main.feels_like}°C</p>
+          <p>Feels like: {Math.round(weatherData.main.feels_like)}°C</p>
 
-          {forecastData && (
-            <div>
-              <h2>5-Day Forecast</h2>
-              {forecastData && forecastData.list && (
-                <div>
-                  <div className="forecast-list">
-                    {forecastData.list.map((forecast, index) => (
-                      <div key={index} className="forecast-item">
-                        <p>Date and Time: {forecast.dt_txt}</p>
-                        <p>Temperature: {Math.round(forecast.main.temp)}°C</p>
-                        <p>Weather: {forecast.weather[0].description}</p>
-                        <img
-                          src={`https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`}
-                          alt="weather icon"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+   
+
+{forecastData && (
+  <div>
+    <h2>5-Day Forecast</h2>
+    <div className="forecast-list">
+      {groupForecastByDate(forecastData.list).map((group, index) => (
+        <div key={index} className="forecast-day">
+          {/* <h3>{formatDate(group[0].dt_txt)}</h3> */}
+          <div className="forecast-container">
+            {group.map((forecast, idx) => (
+              <div key={idx} className="forecast-item">
+                <h3>{formatDate(forecast.dt_txt).formattedDate}</h3>
+                <p>{formatDate(forecast.dt_txt).formattedTime}</p>
+
+                <h2>{Math.round(forecast.main.temp)}°C</h2>
+                {/* <p>{forecast.weather[0].description}</p> */}
+                <img
+                  src={`https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`}
+                  alt="weather icon"
+                />
+              </div>
+            ))}
+          </div>
         </div>
+      ))}
+    </div>
+  </div>
+)}
+    </div>
       )}
     </div>
+
+
   );
 };
 
@@ -157,4 +198,7 @@ export default function App() {
     </div>
   );
 }
-//this is a comment//
+
+
+// changed temps to display in whole nums without decimals //
+// Changed to single Get Weather button for Current and 5 Day Forecast 
