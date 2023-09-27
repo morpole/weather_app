@@ -132,9 +132,9 @@ function formatDate(dt_txt) {
           id="cityInput"
           value={inputValue}
           onChange={handleCityChange}
-          placeholder=" Enter City"
+          placeholder=" Enter your city"
         />
-        <button type="submit">Get Weather</button>
+        <button type="submit" id='submit'>GO</button>
       </form>
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error}</div>}
@@ -142,15 +142,15 @@ function formatDate(dt_txt) {
       {weatherData && (
         <div>
           <h2>{weatherData.name}</h2>
-          <h2>{weatherData.sys.country}</h2>
-          <p>High: {Math.round(weatherData.main.temp_max)}</p>
-          <h1>Temp: {Math.round(weatherData.main.temp)}°C</h1>
-          <p>Low: {Math.round(weatherData.main.temp_min)}°C</p>
+          {/* <h2>{weatherData.sys.country}</h2> */}
+          <p>High: {Math.round(weatherData.main.temp_max)}°C</p>
+          <h2 id="mainTemp">{Math.round(weatherData.main.temp)}°C</h2>
           <img
             className="logo"
             src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`}
             alt="weather icon"
-          />
+            />
+          <p>Low: {Math.round(weatherData.main.temp_min)}°C</p>
           <p>{weatherData.weather[0].description}</p>
           <p>Feels like: {Math.round(weatherData.main.feels_like)}°C</p>
 
@@ -158,7 +158,7 @@ function formatDate(dt_txt) {
 
 {forecastData && (
   <div>
-    <h2>5-Day Forecast</h2>
+    <h2>5-Day Forecast </h2>
     <div className="forecast-list">
       {groupForecastByDate(forecastData.list).map((group, index) => (
         <div key={index} className="forecast-day">
@@ -167,7 +167,7 @@ function formatDate(dt_txt) {
             {group.map((forecast, idx) => (
               <div key={idx} className="forecast-item">
                 <h3>{formatDate(forecast.dt_txt).formattedDate}</h3>
-                <p>{formatDate(forecast.dt_txt).formattedTime}</p>
+                <p id="hourslc" >{formatDate(forecast.dt_txt).formattedTime}h</p>
 
                 <h2>{Math.round(forecast.main.temp)}°C</h2>
                 {/* <p>{forecast.weather[0].description}</p> */}
@@ -199,6 +199,16 @@ export default function App() {
   );
 }
 
+// ****toDo*****
+// Have user profile to maintain personal settings:
+// Implement your location automatically
+// Previous city inputs 
+// Decimal or Imperial Measurements
+// Light or Dark mode
+// *************
 
-// changed temps to display in whole nums without decimals //
+
+// 1st changes to CSS- more to follow.
+// Sorted out Flexbox to display 5-Day forecast horizontally //
+// Changed temps to display in whole nums without decimals //
 // Changed to single Get Weather button for Current and 5 Day Forecast 
