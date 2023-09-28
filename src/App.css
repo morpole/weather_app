@@ -54,11 +54,11 @@ p {
   height: 2rem; 
   }
 
-  #mainTemp{
-    font-size: 4rem;
-    margin-top: 1%; 
-    margin-bottom: 1%;
-  }
+#mainTemp{
+  font-size: 4rem;
+  margin-top: 1%; 
+  margin-bottom: 1%;
+}
 
 .forecast-container {
   margin-left: .25rem;
@@ -67,29 +67,17 @@ p {
   flex-wrap: no-wrap;
   justify-content: space-between;
   flex-direction: row; 
-  overflow: scroll;
+  overflow-y: hidden;
 }
 
- /* .forecast-day {
-  width: 100%; 
-  margin: 1px; 
-}   */
-
 .forecast-item {
-  width: 100%; /* Each row contains up to 5 items with some spacing */
-  margin: 0px; /* Spacing between items */
+  width: 100%; 
+  margin: 0%; /* Spacing between items */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  /* overflow: hidden; Hide any overflowing content */
-  white-space: nowrap; /* Prevent text from wrapping */
-  text-overflow: ellipsis; /* Add ellipsis (...) for text overflow */
+  white-space: nowrap;
   background: linear-gradient(to top, #87CEEB, #1E90FF);
 }
 
-
-.forecast-item img {
-  max-width: 100%; /* Limit image width to the container's width */
-  height: auto; /* Maintain image aspect ratio */
-}
 

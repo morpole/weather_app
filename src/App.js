@@ -9,6 +9,13 @@ const Weather = () => {
   const [inputValue, setInputValue] = useState("Dublin,IE");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [unit, setUnit] = useState("metric");
+
+  const toggleUnit = () => {
+    // Toggle the unit between "metric" and "imperial"
+    const newUnit = unit === "metric" ? "imperial" : "metric";
+    setUnit(newUnit);
+  };
   
 
   const fetchWeatherData = useCallback(async () => {
@@ -16,14 +23,14 @@ const Weather = () => {
       if (!city) {
         return;
       }
-
+  
       setLoading(true); // Start loading
       setError(null); // Clear previous error
-
+  
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&limit=2&appid=${apiKey}&units=metric`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&limit=2&appid=${apiKey}&units=${unit}`
       );
-
+  
       if (!response.ok) {
         throw new Error("Weather data not found");
       }
@@ -36,8 +43,8 @@ const Weather = () => {
     } finally {
       setLoading(false); // Stop loading, whether success or error
     }
-  }, [apiKey, city]);
-
+  }, [apiKey, city, unit]);
+  
   const fetchForecastData = useCallback(async () => {
     try {
       if (!city) {
@@ -48,7 +55,7 @@ const Weather = () => {
       setError(null);
 
       const forecastResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=${unit}`
       );
 
       if (!forecastResponse.ok) {
@@ -64,7 +71,7 @@ const Weather = () => {
     } finally {
       setLoading(false);
     }
-  }, [apiKey, city]);
+  }, [apiKey, city, unit]);
 
   useEffect(() => {
     if (city) {
@@ -72,11 +79,11 @@ const Weather = () => {
       fetchForecastData();
     }
   }, [city, fetchWeatherData, fetchForecastData]);
-
+  
   const handleCityChange = (e) => {
     setInputValue(e.target.value);
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
     if (inputValue.trim()) {
@@ -144,6 +151,7 @@ function formatDate(dt_txt) {
           <h2>{weatherData.name}</h2>
           {/* <h2>{weatherData.sys.country}</h2> */}
           <p>High: {Math.round(weatherData.main.temp_max)}°C</p>
+          <button onClick={toggleUnit}>°C - °F</button>
           <h2 id="mainTemp">{Math.round(weatherData.main.temp)}°C</h2>
           <img
             className="logo"
@@ -207,8 +215,9 @@ export default function App() {
 // Light or Dark mode
 // *************
 
-
+// ******Implemented*****
 // 1st changes to CSS- more to follow.
 // Sorted out Flexbox to display 5-Day forecast horizontally //
 // Changed temps to display in whole nums without decimals //
 // Changed to single Get Weather button for Current and 5 Day Forecast 
+// **********************
