@@ -211,7 +211,6 @@ export default function App() {
 // Have user profile to maintain personal settings:
 // Implement your location automatically
 // Previous city inputs 
-// Decimal or Imperial Measurements
 // Light or Dark mode
 // *************
 
@@ -220,4 +219,5 @@ export default function App() {
 // Sorted out Flexbox to display 5-Day forecast horizontally //
 // Changed temps to display in whole nums without decimals //
 // Changed to single Get Weather button for Current and 5 Day Forecast 
+// Decimal or Imperial Measurements
 // **********************
